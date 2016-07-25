@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>{% block title %}{% endblock %}</title>
+    <!-- BOOTSTRAP STYLES-->
+    <link href="{{ url_for('static', filename='assets/css/bootstrap.css') }}" rel="stylesheet"/>
+    <!-- FONTAWESOME STYLES-->
+    <link href="{{ url_for('static', filename='assets/css/font-awesome.css') }}" rel="stylesheet"/>
+    <!-- CUSTOM STYLES-->
+    <link href="{{ url_for('static', filename='assets/css/custom.css') }} " rel="stylesheet"/>
+    <!-- GOOGLE FONTS-->
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'/>
+
+    <script src="https://use.fontawesome.com/090e47d401.js"></script>
+
+    {% block extra_head %}
+    {% endblock %}
+</head>
+<body>
+
+{% if showLogin %}
+
+<div class="modal fade" id="login-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
+    	  <div class="modal-dialog">
+				<div class="loginmodal-container">
+					<h1>Login to Your Account</h1><br>
+				  <form action="/login" method="POST">
+					<input type="text" name="mobile" required placeholder="mobile">
+					<input type="password" name="masterPassword" required placeholder="master Password">
+					<input type="submit" name="login" class="login loginmodal-submit" value="Login">
+				  </form>
+
+				  <div class="login-help">
+					<a data-dismiss="modal" data-toggle="modal" href="#register-modal">Register</a> - <a href="#">Forgot Password</a>
+				  </div>
+				</div>
+			</div>
+</div>
+
+<div class="modal fade" id="register-modal" data-backdrop='static' data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display:none">
+    	  <div class="modal-dialog">
+				<div class="loginmodal-container">
+					<h1>Register</h1><br>
+				  <form action="/register" method="POST">
+					<input type="text" name="mobile" required placeholder="mobile">
+					<input type="text" name="nickName" placeholder="nickName">
+					<input type="password" name="masterPassword" required placeholder="masterPassword">
+					<input type="submit" name="login" class="login loginmodal-submit" value="Create Account">
+				  </form>
+                    <div class="login-help">
+					<a data-dismiss="modal" data-toggle="modal" href="#login-modal">Log in</a>
+				  </div>
+				</div>
+			</div>
+</div>
+
+{% endif %}
+
+
+
+
+
+
+<div id="wrapper">
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="adjust-nav">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".sidebar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" style="overflow:visible"  href="#" >
+                    <img  src="{{ url_for('static', filename='assets/img/logo.jpg') }}"/>
+                </a>
+            </div>
+                <span class="logout-spn">
+                  <a href="/logout" style="color:#fff;">log out</a>
+                </span>
+        </div>
+    </div>
+
+    <!-- /. NAV TOP  -->
+    <nav class="navbar-default navbar-side" role="navigation">
+        <div class="sidebar-collapse">
+            <ul class="nav" id="main-menu">
+                <li {% block dashboard_active %}{% endblock %}>
+                    <a href="/"><i class="fa fa-desktop "></i>Dashboard <span class="badge">HOT</span></a>
+                </li>
+               <!-- <li>
+                    <a href="ui.html"><i class="fa fa-table "></i>UI Elements <span class="badge">Included</span></a>
+                </li>
+                <li>
+                    <a href="blank.html"><i class="fa fa-edit "></i>Blank Page <span class="badge">Included</span></a>
+                </li>-->
+
+                <li  {% block new_active %}{% endblock %}>
+                    <a href="/password/new"><i class="fa fa-edit"></i>New Password <span class="badge">NEW</span></a>
+                </li>
+               <!-- <li>
+                    <a href="#"><i class="fa fa-bar-chart-o"></i>My Link Two</a>
+                </li>
+
+                <li>
+                    <a href="#"><i class="fa fa-edit "></i>My Link Three </a>
+                </li>
+                <li>
+                    <a href="#"><i class="fa fa-table "></i>My Link Four</a>
+                </li>
+                <li>
+                    <a href="#"><i class="fa fa-edit "></i>My Link Five </a>
+                </li>-->
+
+            </ul>
+        </div>
+
+    </nav>
+    <!-- /. NAV SIDE  -->
+    <div id="page-wrapper">
+        <div id="page-inner">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h2>ADMIN DASHBOARD</h2>
+                </div>
+            </div>
+            <!-- /. ROW  -->
+            <hr/>
+
+
+           {% block content %}{% endblock %}
+
+
+            <!-- /. ROW  -->
+        </div>
+        <!-- /. PAGE INNER  -->
+    </div>
+    <!-- /. PAGE WRAPPER  -->
+</div>
+<div class="footer">
+
+
+    <div class="row">
+        <div class="col-lg-12">
+            &copy; 2014 yourdomain.com | Design by: <a href="http://binarytheme.com" style="color:#fff;"
+                                                       target="_blank">www.binarytheme.com</a>
+        </div>
+    </div>
+</div>
+
+
+<!-- /. WRAPPER  -->
+<!-- SCRIPTS -AT THE BOTOM TO REDUCE THE LOAD TIME-->
+<!-- JQUERY SCRIPTS -->
+<script src="{{ url_for('static', filename='assets/js/jquery-1.10.2.js') }}"></script>
+<!-- BOOTSTRAP SCRIPTS -->
+<script src="{{ url_for('static', filename='assets/js/bootstrap.min.js') }}"></script>
+<!-- CUSTOM SCRIPTS -->
+<script src="{{ url_for('static', filename='assets/js/custom.js') }}"></script>
+
+{% if showLogin %}
+<script>
+    $('#login-modal').modal({backdrop: 'static', keyboard: false})
+</script>
+{% endif %}
+
+{% block extra_footer %}
+ {% endblock %}
+
+
+</body>
+</html>
