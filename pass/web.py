@@ -4,6 +4,7 @@ from datetime import datetime
 import flask_login
 from flask import Flask,request, redirect , url_for
 from flask import render_template
+from flask import jsonify
 
 import dao
 import services
@@ -12,6 +13,7 @@ from models import passwordItem
 from models import user
 from utils import encrypt
 from utils import encryptPasswordItem
+from utils import decrytPassword
 
 
 app = Flask(__name__)
@@ -106,7 +108,12 @@ def register():
     flask_login.login_user(newUser)
     return redirect('/')
 
-
+@app.route("/password/<id>")
+def passwordItem(id):
+    element = dao.getById(id)
+    token = element['password']
+    element['password'] = decrytPassword(token)
+    return jsonify(**element)
 
 
 if __name__ == "__main__":

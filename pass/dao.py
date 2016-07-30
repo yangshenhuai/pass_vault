@@ -34,6 +34,10 @@ def getSiteByName(site_name):
     query=Query()
     return db.get( (query.tag=='site_config') & (query.site_name == site_name ) )
 
+def getById(id):
+    return db.get( eid=int(id) )
+
+
 
 def remove(tag) :
     query = Query()

@@ -27,12 +27,12 @@
                     {% for passwordItem in passwordItemRow %}
                         {% if passwordItem is not none %}
                             <div class="col-lg-2 col-md-2 col-sm-2 col-xs-6">
-                                <div class="div-square square_select">
+                                <div class="div-square square_select" password-id="{{ passwordItem.eid }}">
                                     <div class="square-content view hm-black-strong">
                                         <i class="fa {{ passwordItem.logo }} fa-5x"></i>
                                         <h4>{{ passwordItem.websiteName }}</h4>
                                         <div class="square_button mask pattern-1 flex-center">
-                                             <a href="#" class="btn btn-success">&nbsp;&nbsp;&nbsp;Show&nbsp;&nbsp;&nbsp;</a>
+                                             <a href="#"  class="btn btn-success show_btn" onclick="showPasswordItem('{{ passwordItem.eid }}')">&nbsp;&nbsp;&nbsp;Show&nbsp;&nbsp;&nbsp;</a>
                                         </div>
                                     </div>
                                 </div>
@@ -49,25 +49,73 @@
                     <br/>
                     <div class="alert alert-info">
                                                   <!-- Single button -->
-                            <div class="btn-group dropup">
+                            <div  id="action_button" class="btn-group dropup" style="display:none">
                               <button type="button" class="btn btn-default dropdown-toggle btn-lg btn-primary" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 Actions <span class="caret"></span>
                               </button>
                               <ul class="dropdown-menu">
-                                <li><a href="/password/new">New Password</a></li>
-                                  <li role="separator" class="divider"></li>
-                                <li><a href="#">New Security Notes</a></li>
-                                  <li role="separator" class="divider"></li>
-                                <li><a href="#">Delete Selected</a></li>
+                                <li><a href="/password/new">Remove Selected</a></li>
+                                 <li ><a href="#" onclick="showChangePasswordModal()" id="change_password_action_button">Change Password</a></li>
                               </ul>
                             </div>
                     </div>
 
                 </div>
             </div>
+
+<div class="modal fade" id="show_detail_dialog" tabindex="-1" role="dialog" aria-labelledby="password_item">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="password_item_title"></h4>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="form-group" id="item_account_div">
+            <label for="item_account" class="control-label">Account:</label>
+            <input type="text" class="form-control" id="item_account">
+          </div>
+
+           <div class="form-group" id="item_sms_msg_div" style="display:none">
+            <label for="item_sms_msg" class="control-label">SMS Msg:</label>
+             <div class="input-group">
+                <input type="text" class="form-control" id="item_sms_msg" />
+                    <span class="input-group-btn">
+                      <button class="btn btn-secondary" id="sms_message_btn"  type="button">&nbsp;&nbsp;&nbsp; Sent Msg &nbsp;&nbsp;&nbsp;</button>
+                    </span>
+             </div>
+           </div>
+
+          <div class="form-group">
+            <label for="item_password" class="control-label">Password:</label>
+              <div class="input-group">
+                    <input type="text" class="form-control" id="item_password"/>
+                    <span class="input-group-btn">
+                      <button class="btn btn-secondary" data-clipboard-target="#item_password" id="copy_password_btn"  type="button">&nbsp;&nbsp;&nbsp; Copy &nbsp;&nbsp;&nbsp;</button>
+                        <button class="btn btn-secondary"  id="generate_password_btn"  style="display:none" onclick="show_generate_password()" type="button">&nbsp;&nbsp;&nbsp; Generate &nbsp;&nbsp;&nbsp;</button>
+                    </span>
+
+
+               </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" onclick="goToSite()" site_url="" id="go_to_site_btn" >Go</button>
+        <button type="button" class="btn btn-primary" onclick="savePassword()" id="save_pwd_btn" style="display:none">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
 {% endblock %}
 
 
 {% block extra_footer %}
 <script src="{{ url_for('static', filename='assets/js/mdb.min.js') }}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.5.12/clipboard.min.js"></script>
  {% endblock %}
