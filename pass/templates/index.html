@@ -11,14 +11,13 @@
 {% block content %}
  <div class="row">
                 <div class="col-lg-12 ">
-                    <div class="alert alert-info">
+                    <div class="alert alert-info" id="message_banner">
                         {% if current_user.is_authenticated %}
-                            <strong>Welcome {{ current_user.nickName }} ! </strong> You Have No pending Task For Today.
+                            <strong>Welcome {{ current_user.nickName }} ! </strong>
                         {% else %}
                             <strong>Please login! </strong>
                         {% endif %}
                     </div>
-
                 </div>
  </div>
             {% for passwordItemRow in passwordItems | batch(6,none) %}
@@ -26,7 +25,7 @@
                 <div class="row text-center pad-top">
                     {% for passwordItem in passwordItemRow %}
                         {% if passwordItem is not none %}
-                            <div class="col-lg-2 col-md-2 col-sm-2 col-xs-6">
+                            <div class="col-lg-2 col-md-2 col-sm-2 col-xs-6" id="squre_{{ passwordItem.eid }}">
                                 <div class="div-square square_select" password-id="{{ passwordItem.eid }}">
                                     <div class="square-content view hm-black-strong">
                                         <i class="fa {{ passwordItem.logo }} fa-5x"></i>
@@ -54,7 +53,7 @@
                                 Actions <span class="caret"></span>
                               </button>
                               <ul class="dropdown-menu">
-                                <li><a href="/password/new">Remove Selected</a></li>
+                                <li><a href="#"  data-toggle="modal" data-target=".confirm_button">Remove Selected</a></li>
                                  <li ><a href="#" onclick="showChangePasswordModal()" id="change_password_action_button">Change Password</a></li>
                               </ul>
                             </div>
@@ -72,6 +71,7 @@
       </div>
       <div class="modal-body">
         <form>
+            <input type="hidden" id="selected_password_id"/>
           <div class="form-group" id="item_account_div">
             <label for="item_account" class="control-label">Account:</label>
             <input type="text" class="form-control" id="item_account">
@@ -104,9 +104,25 @@
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
         <button type="button" class="btn btn-primary" onclick="goToSite()" site_url="" id="go_to_site_btn" >Go</button>
-        <button type="button" class="btn btn-primary" onclick="savePassword()" id="save_pwd_btn" style="display:none">Save</button>
+        <button type="button" class="btn btn-primary" onclick="updatePasswordItem()" id="save_pwd_btn" style="display:none">Save</button>
       </div>
     </div>
+  </div>
+</div>
+
+
+<div class="modal fade confirm_button"  role="dialog" id="confirm_dialog" aria-labelledby="Confirm_Button" tabindex="-1">
+  <div class="modal-dialog modal-sm" role="document">
+    <div class="modal-content">
+        <div class="modal-body">
+            Are You Sure?
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">NO</button>
+            <button type="button" class="btn btn-primary" onclick="removeSelectedItem()" >YES</button>
+        </div>
+    </div>
+
   </div>
 </div>
 

@@ -36,16 +36,6 @@ def user_loader(mobile):
     dbUser.id = mobile
     return dbUser
 
-# @login_manager.request_loader
-# def request_loader(request):
-#     mobile = request.form.get('mobile')
-#     user = dao.getUserByMobile(mobile)
-#     if user is None:
-#         return
-#     user.id = mobile
-#     user.is_authenticated = encrypt(request.form['masterPassword']) == user.masterPassword
-#     return user
-
 @login_manager.unauthorized_handler
 def unauthorized_handler():
     return render_template('index.html',showLogin=True)
@@ -95,6 +85,8 @@ def newPassword():
     else:
         return render_template('new_password.html',sites =  dao.getAllSiteConfigs())
 
+
+
 @app.route("/register",methods=["POST"])
 def register():
     mobile = request.form['mobile']
@@ -109,12 +101,41 @@ def register():
     return redirect('/')
 
 @app.route("/password/<id>")
-def passwordItem(id):
+@flask_login.login_required
+def specificPassword(id):
     element = dao.getById(id)
     token = element['password']
     element['password'] = decrytPassword(token)
+    element['eid'] = id
     return jsonify(**element)
 
+@app.route("/password/update" , methods=["POST"])
+@flask_login.login_required
+def updateItem():
+    result = {}
+    eid = request.form['pwd_id']
+    new_pwd = request.form['new_pwd']
+    if new_pwd == '' :
+        result['status'] = 'fail'
+        result['message'] = 'Password is required'
+        return jsonify(**result)
+    dao.updatePasswordItem(eid,encryptPasswordItem(new_pwd))
+    result['status'] = 'success'
+    return jsonify(**result)
+
+@app.route("/password/remove" , methods=["POST"])
+@flask_login.login_required
+def removeItems():
+    result = {}
+    selected_id = request.form['selected_ids']
+    if(selected_id == ''):
+        result['status'] = 'fail'
+        result['message'] = 'Please select item to delete'
+        return jsonify(**result)
+    eids = [int(id) for id in selected_id.split(',')]
+    dao.removeWithIds(eids)
+    result['status'] = 'success'
+    return jsonify(**result)
 
 if __name__ == "__main__":
     app.run()

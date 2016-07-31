@@ -88,8 +88,6 @@ function showPasswordItem(pwd_id){
         }
     });
 }
-
-
 function goToSite() {
     url = $('#go_to_site_btn').attr('site_url')
     window.open(url, '_blank')
@@ -102,6 +100,7 @@ function showChangePasswordModal(){
         $.ajax('/password/'+id , {
         dataType:'json',
         success:function(data){
+            $('#selected_password_id').val(data.eid)
             $('#password_item_title').text(data.websiteName)
             $('#item_account').val(data.userName).prop('readonly', true);
             $('#item_password').val(data.password).prop('readonly', false);
@@ -129,5 +128,69 @@ function show_generate_password() {
     var generatedPwd = randomString(12,'#Aa!')
     $('#item_password').val(generatedPwd)
 }
+
+function updatePasswordItem() {
+    var new_pwd = $('#item_password').val()
+    var pwd_id = $('#selected_password_id').val()
+
+    if(new_pwd == '') {
+        $('#message_banner').text('Password is Required')
+        $('#message_banner').removeClass().addClass('alert').addClass('alert-warning')
+    }
+
+    $.ajax('/password/update' ,{
+          method:'POST',
+          dataType:'json',
+          data : {'pwd_id':pwd_id,'new_pwd':new_pwd} ,
+          success:function(data){
+               $('#show_detail_dialog').modal('hide')
+                if(data.status == 'success') {
+                     $('#message_banner').text('Save Password Successfully')
+                     $('#message_banner').removeClass().addClass('alert').addClass('alert-success')
+                } else {
+                     $('#message_banner').text(data.message)
+                     $('#message_banner').removeClass().addClass('alert').addClass('alert-warning')
+                }
+
+          }
+    });
+}
+
+function removeSelectedItem() {
+    var selected_ids = '' ;
+    $('.div-square_selected').each(function(i,selected_div){
+        var id = $(this).attr('password-id')
+        selected_ids += id
+        selected_ids += ','
+    })
+    if(selected_ids == '') {
+        $('#message_banner').text('Please select item first')
+        $('#message_banner').removeClass().addClass('alert').addClass('alert-warning')
+        $('#confirm_dialog').modal('hide')
+    }
+    selected_ids = selected_ids.substring(0,selected_ids.length -1)
+     $.ajax('/password/remove' ,{
+        method:'POST',
+        dataType:'json',
+        data:{'selected_ids' : selected_ids},
+        success : function(data) {
+            if(data.status == 'success') {
+                  $('#message_banner').text('Deleted Successfully')
+                  $('#message_banner').removeClass().addClass('alert').addClass('alert-success')
+                  id_arr = selected_ids.split(',')
+                  for (var i in id_arr){
+                     $('#squre_' + id_arr[i]).remove()
+                  }
+            }
+            if(data.status == 'fail') {
+                   $('#message_banner').text(data.message)
+                  $('#message_banner').removeClass().addClass('alert').addClass('alert-warning')
+            }
+            $('#confirm_dialog').modal('hide')
+        }
+
+     });
+}
+
 
 

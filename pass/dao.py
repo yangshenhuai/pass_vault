@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from tinydb import TinyDB, Query
 from constants import dbPath
+from datetime import datetime
 
 db = TinyDB(dbPath)
 
@@ -37,8 +38,12 @@ def getSiteByName(site_name):
 def getById(id):
     return db.get( eid=int(id) )
 
-
+def updatePasswordItem(eid,pwd):
+    db.update({'password':pwd ,'lastUpdateTime':datetime.now().strftime('%Y-%m-%d %H:%M:%S')},eids=[int(eid)])
 
 def remove(tag) :
     query = Query()
     db.remove(query.tag==tag)
+
+def removeWithIds(eid_array) :
+    db.remove(eids=eid_array)
