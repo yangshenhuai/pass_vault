@@ -6,12 +6,18 @@ from datetime import datetime
 db = TinyDB(dbPath)
 
 
-def getAllPasswordItem(mobile):
+def getUserPasswords(mobile):
     query = Query()
-    return db.search( (query.tag == 'passwordItem') & (query.mobile==mobile) )
+    return db.search( (query.tag == 'passwordItem') & (query.mobile==mobile))
+
+def getUserSecurityNotes(mobile) :
+    query = Query()
+    return db.search((query.tag == 'securityNotes') & (query.user == mobile))
+
+
 
 def save(item):
-    db.insert(item.__dict__)
+    return db.insert(item.__dict__)
 
 
 def getUserByMobile(mobile):

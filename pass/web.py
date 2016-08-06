@@ -11,6 +11,7 @@ import services
 from constants import session_secret_key
 from models import passwordItem
 from models import user
+from models import securityNotes
 from utils import encrypt
 from utils import encryptPasswordItem
 from utils import decrytPassword
@@ -64,7 +65,7 @@ def logout():
 @flask_login.login_required
 def index():
     current_user = flask_login.current_user
-    passwordItems = dao.getAllPasswordItem(current_user.__dict__['mobile'])
+    passwordItems = dao.getUserPasswords(current_user.__dict__['mobile'])
     for passwordItem in passwordItems:
         siteElem = dao.getSiteByName(passwordItem['websiteName'])
         if siteElem is not None:
@@ -136,6 +137,30 @@ def removeItems():
     dao.removeWithIds(eids)
     result['status'] = 'success'
     return jsonify(**result)
+
+@app.route("/securityNotes" , methods=["GET"])
+@flask_login.login_required
+def security_notes():
+    current_user = flask_login.current_user
+    user_security_notes = dao.getUserSecurityNotes( current_user.__dict__['mobile'])
+    return render_template('securityNotes.html',securityNotes=user_security_notes)
+
+@app.route("/securityNotes/new" , methods=["POST"])
+@flask_login.login_required
+def new_security_notes():
+    result = {}
+    title = request.form['title']
+    detail = request.form['detail']
+    current_user = flask_login.current_user
+    eid = dao.save(securityNotes(title,detail,current_user.__dict__['mobile'],datetime.now().strftime('%Y-%m-%d %H:%M:%S'),datetime.now().strftime('%Y-%m-%d %H:%M:%S')))
+    result['id'] = eid
+    result['status'] = 'success'
+    return jsonify(**result)
+
+
+
+
+
 
 if __name__ == "__main__":
     app.run()

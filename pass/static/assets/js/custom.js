@@ -193,4 +193,40 @@ function removeSelectedItem() {
 }
 
 
+function showNotesDetails(id) {
+    $('#group_item_' + id  + ' > .list-group-item-text').toggle(300);
+    $('.list-group-item').removeClass('active');
+     $('#group_item_' + id ).addClass('active');
+}
+
+function saveNewNotes() {
+        var title = $('#security_note_title').val()
+        var detail = $('#security_note_detail').val()
+
+        $.ajax('/securityNotes/new',{
+            method:'POST' ,
+            data:{'title':title,'detail':detail},
+            dataType:'json',
+            success:function(resp){
+                if(resp.status=='success') {
+                    $('#message_banner').html('saved successfully')
+                    var $a = $("<a>", {href: 'javascript:void(0)', class: 'list-group-item',onclick:'showNotesDetails(' + resp.id + ')'  ,id:'group_item_' + resp.id })
+                    var $h4 = $('<h4>',{class:'list-group-item-heading'})
+                    $h4.html(title)
+                    var $p = $('<p>',{class:'list-group-item-text' , style:'display:none'})
+                    $p.html(detail)
+                    $a.append($h4).append($p)
+                    $('#security_notes_list').prepend($a)
+                     $('#new_security_note_dialog').modal('hide')
+                }
+
+            }
+
+        })
+
+
+
+}
+
+
 
